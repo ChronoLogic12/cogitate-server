@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = false
+name = "pypi"
+
+[packages]
+flask = "*"
+flask-sqlalchemy = "*"
+pymysql = "*"
+flask-pymongo = "*"
+certifi = "*"
+pymongo = {extras = ["srv"], version = "*"}
+
+[dev-packages]
+pytest = "*"
+
+[requires]
+python_version = "3.7"
+
+[scripts]
+dev = "sh -c \"export FLASK_ENV='development' && flask run\""

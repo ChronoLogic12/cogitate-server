@@ -19,6 +19,29 @@ app.config.update(
 mongo = PyMongo(app)
 
 
+@app.route("/")
+@app.route("/posts", methods=["GET", "POST"])
+def get_posts():
+    if request.method == "POST":
+        response = mongo.db.posts.insert_one(request.get_json())
+        new_post = mongo.db.posts.find_one({"_id": ObjectId(response.inserted_id)})
+        new_post["_id"] = str(new_post["_id"])
+        return jsonify(new_post), 201
+        
+    
+    else:
+        posts_number = int(request.args.get("limit")) if request.args.get("limit") else 20
+
+        posts = mongo.db.posts.find().limit(posts_number)
+        data = []
+        for post in posts:
+            post["_id"] = str(post["_id"])
+            data.append(post)
+
+        return jsonify(data)
+
+
+
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")))

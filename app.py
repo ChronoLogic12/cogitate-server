@@ -41,6 +41,13 @@ def get_posts():
         return jsonify(data)
 
 
+@app.route("/posts/<_id>")
+def get_post_by_id(_id):
+    post = mongo.db.posts.find_one({"_id": ObjectId(_id)})
+    post["_id"] = str(post["_id"])
+
+    return jsonify(post)
+
 
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),

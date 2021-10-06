@@ -10,6 +10,7 @@ pymysql = "*"
 flask-pymongo = "*"
 certifi = "*"
 pymongo = {extras = ["srv"], version = "*"}
+validators = "*"
 
 [dev-packages]
 pytest = "*"

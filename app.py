@@ -21,16 +21,28 @@ def get_posts():
         
     
     else:
-        posts_number = int(request.args.get("limit")) if request.args.get("limit") else 20
+        try:
+            limit = request.args.get("limit", default=20, type=int)
+            posts_number = int(limit)
+            if posts_number <= 0 or posts_number > 100:
+                raise ValueError("Limit value out of range (1-100)")
 
-        posts = mongo.db.posts.find().limit(posts_number)
-        data = []
-        for post in posts:
-            post["_id"] = str(post["_id"])
-            data.append(post)
+            posts = mongo.db.posts.find().limit(posts_number)
+            data = []
+            for post in posts:
+                post["_id"] = str(post["_id"])
+                data.append(post)
 
-        return jsonify(data)
+            if len(data) == 0:
+                return "", 204
 
+            return jsonify(data)
+
+        except ValueError as err:
+            return jsonify({"error": f"{err}"}), 400
+        except:
+            return jsonify({"error": "Internal server error"}),500
+            
 
 @app.route("/posts/<_id>")
 def get_post_by_id(_id):

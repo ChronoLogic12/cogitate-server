@@ -5,8 +5,10 @@ from flask import (
 from dbconfig import mongo_config
 if os.path.exists("env.py"):
     import env
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 mongo = mongo_config(app)
 

@@ -15,11 +15,15 @@ mongo = mongo_config(app)
 @app.route("/posts", methods=["GET", "POST"])
 def get_posts():
     if request.method == "POST":
-        response = mongo.db.posts.insert_one(request.get_json())
-        new_post = mongo.db.posts.find_one({"_id": ObjectId(response.inserted_id)})
-        new_post["_id"] = str(new_post["_id"])
-        return jsonify(new_post), 201
-        
+        try:
+            response = mongo.db.posts.insert_one(request.get_json())
+            new_post = mongo.db.posts.find_one({"_id": ObjectId(response.inserted_id)})
+            new_post["_id"] = str(new_post["_id"])
+            return jsonify(new_post), 201
+        except (ValueError, NameError, TypeError) as err:
+            return jsonify({"error": f"{err}"}), 400
+        except:
+            return jsonify({"error": "Internal server error"}), 500
     
     else:
         try:
